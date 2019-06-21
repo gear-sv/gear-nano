@@ -1,0 +1,22 @@
+{
+  "name": "gear-pla",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gear-sv/gear-pla.git"
+  },
+  "author": "Sean Pollock",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gear-sv/gear-pla/issues"
+  },
+  "homepage": "https://github.com/gear-sv/gear-pla#readme",
+  "dependencies": {
+    "neonplanaria": "0.0.19"
+  }
+}
