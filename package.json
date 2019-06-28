@@ -17,6 +17,9 @@
   },
   "homepage": "https://github.com/gear-sv/gear-pla#readme",
   "dependencies": {
-    "neonplanaria": "0.0.19"
+    "install": "^0.12.2",
+    "neonplanaria": "0.0.19",
+    "npm": "^6.9.0",
+    "zeromq": "^5.1.0"
   }
 }
