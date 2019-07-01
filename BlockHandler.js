@@ -1,14 +1,14 @@
+// producer.js
+const zmq = require('zeromq')
+  , socket = zmq.socket('push')
+
 const { planaria } = require("neonplanaria")
-const { promises: fs } = require("fs")
-const contractModule = require("./a.out.js")
-const zeromq = require("zeromq")
 
 class BlockHandler {
   startServer() {
-    this.socket = zeromq.socket("push")
-    this.socket.bindSync=("tcp://127.0.0.1:3000")
+    socket.bindSync('tcp://127.0.0.1:3000')
   }
-  
+
   startPlanaria() {
     planaria.start({
       src: {
@@ -20,31 +20,19 @@ class BlockHandler {
       },
       onmempool: function(e) {
         console.log("inside onmempool listener")
-        this.socket.send("some work")
-        console.logK("socket", socket)
-        console.log("after socket send")
+        socket.send("some work")
       }.bind(this),
       onblock: function(e) {
         console.log("inside onblock listener")
-
-        // console.log("example tx", e.tx[0])
-        // this.processBlock(e.tx)
+        socket.send("test transaction")
       },
     })
   }
-
-  processBlock(transactions) {
-    console.log("processing block", transactions)
-    transactions.map(transaction => {
-      this.socket.send("transaction here")
-    })
-  }
-
 }
+
 
 const blockHandler = new BlockHandler()
 blockHandler.startServer()
-setTimeout(() => {
-  blockHandler.startPlanaria()
-}, 500)
+blockHandler.startPlanaria()
+
 
