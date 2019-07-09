@@ -18,6 +18,9 @@
   "homepage": "https://github.com/gear-sv/gear-pla#readme",
   "dependencies": {
     "install": "^0.12.2",
+    "interlevel": "0.0.6",
+    "level": "^5.0.1",
+    "leveldown": "^5.1.1",
     "neonplanaria": "0.0.19",
     "npm": "^6.9.0",
     "zeromq": "^5.1.0"
