@@ -1,40 +1,39 @@
 const { planaria } = require("neonplanaria")
-const { promises: fs } = require("fs")
+const level = require("level")
+const L = require("interlevel")
 const contractModule = require("./a.out.js")
 
-var kv
+// transaction DB container
+let txDB
 
-const mockState = {
-  owner: "sean",
-  supply: 1000,
-  balances: {
-    sean: 500,
-    glenn: 300,
-    craig: 200
-  }
-}
+// state DB container
+let stateDB
 
 planaria.start({
   src: {
-    from: 566470,
-    path: `${process.cwd()}/../gear-bus/bus/87907d460d4823b94bf4458281e161d67a477d26fb1cb42825ee5cf8c0e4fe06/`
+    from: 591200,
+    path: `${process.cwd()}/../gear-bus/bus/589f29e8a632246397fd10d8bab746a5d35eb189118676c20673f82d1ca57ca7/`
   },
-  onstart: async function(e) {
+  onstart: async (e) => {
     // 1. instantiate contract
     
-    // 2. instantiate db instance
-    kv = level("kv", { valueEncoding: "json" })
-    L.server({ db: kv, port: 28335 })
+    // 2. instantiate transaction db
+    txDB = level("txDB", { valueEncoding: "json" })
+    L.server({ db: txDB, port: 28335 })
 
+    // 3. instantiate state db
+    stateDB = level("stateDB", { valueEncoding: "json" })
+    L.server({ db: stateDB, port: 28336 })
   },
-  onmempool: function(e) {
+  onmempool: (e) => {
     console.log("inside onmempool listener")
   },
-  onblock: function(e) {
+  onblock: (e) => {
     console.log("inside onblock listener")
 
     // 1. send transaction in relative order 
     
     // 2. save state snapshot
+    
   },
 })
