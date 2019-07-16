@@ -50,10 +50,32 @@ contractModule.onRuntimeInitialized = () => {
     onblock: (e) => {
       console.log("inside onblock listener")
 
-      // 1. send transaction in relative order
+      // 1. send transaction in relative order to transaction db
+      e.tx.forEach((transaction) => {
+        txDB.put(transaction.tx.h, transaction, (error) => {
+          if (error) console.log("could not write transaction to db")
+        })
+      })
 
-      // 2. save state snapshot
+      // 2. update state based on transactions
+      e.tx.forEach((transaction) => {
+        const methodName = transaction.out[0].s3
+        const params = transaction.out[0].s4
+        switch (methodName) {
+          case "setOwner":
+            setOwner(...params)
+          case "mint":
+            mint(...params)
+          case "transfer":
+            transfer(...parms)
+          default:
+            console.log("invalid method reference")
+            break
+        }
+      })
+      // 3. fetch state from getters
 
+      // 3. save state snapshot
     },
   })
 }
