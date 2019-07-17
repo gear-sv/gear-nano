@@ -13,7 +13,6 @@ let stateDB
 let getOwner
 let getSupply
 let getBalance
-
 let setOwner
 let mint
 let transfer
@@ -60,14 +59,19 @@ contractModule.onRuntimeInitialized = () => {
       // 2. update state based on transactions
       e.tx.forEach((transaction) => {
         const methodName = transaction.out[0].s3
-        const params = transaction.out[0].s4
+        const params = JSON.parse(transaction.out[0].s4)
+        const SENDER = transaction.in[0].e.a
+
         switch (methodName) {
           case "setOwner":
-            setOwner(...params)
+            setOwner(SENDER, ...params)
+            break
           case "mint":
-            mint(...params)
+            mint(SENDER, ...params)
+            break
           case "transfer":
-            transfer(...params)
+            transfer(SENDER, ...params)
+            break
           default:
             console.log("invalid method reference")
             break
@@ -76,17 +80,14 @@ contractModule.onRuntimeInitialized = () => {
 
       // 3. fetch state from getters
       const owner = getOwner()
-      console.log("owner", owner)
       const supply = getSupply()
-      console.log("supply", supply)
       // TODO: get all balances getter, add to state
       const state = { owner, supply }
 
-      // 3. save state snapshot
-      // console.log("e", e.height)
+      // 3. save state snapshot by block number
       stateDB.put(e.height, state, (error) => {
         if (error) console.log("could not write transaction to db")
-      })      
+      })
     },
   })
 }
