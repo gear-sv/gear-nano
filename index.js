@@ -17,8 +17,19 @@ let setOwner
 let mint
 let transfer
 
+console.log("\n\n####################")
+console.log("#")
+console.log("# Welcome to GearSV")
+console.log("#")
+console.log("####################\n\n")
+
 // wait for contract to initialize before starting planaria
 contractModule.onRuntimeInitialized = () => {
+  console.log("\n\n####################")
+  console.log("#")
+  console.log("# Contract Initialized")
+  console.log("#")
+  console.log("####################\n\n")
   planaria.start({
     // remote bitbus reference
     src: {
@@ -87,6 +98,13 @@ contractModule.onRuntimeInitialized = () => {
       // 3. save state snapshot by block number
       stateDB.put(e.height, state, (error) => {
         if (error) console.log("could not write transaction to db")
+        console.log("\n\n####################")
+        console.log("#")
+        console.log("# State Updated")
+        console.log("#")
+        console.log("#", state)
+        console.log("#")
+        console.log("####################\n\n")
       })
     },
   })
