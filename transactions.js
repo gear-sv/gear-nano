@@ -6,7 +6,7 @@ planarium.start({
   port: 3009,
   default: {},
   onstart: async () => {
-    return L.client({ host: "127.0.0.1", port: 28334 })
+    return L.client({ host: "127.0.0.1", port: 28335 })
   },
   onquery: (e) => {
     let code = Buffer.from(e.query, 'base64').toString()
