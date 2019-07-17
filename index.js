@@ -67,15 +67,26 @@ contractModule.onRuntimeInitialized = () => {
           case "mint":
             mint(...params)
           case "transfer":
-            transfer(...parms)
+            transfer(...params)
           default:
             console.log("invalid method reference")
             break
         }
       })
+
       // 3. fetch state from getters
+      const owner = getOwner()
+      console.log("owner", owner)
+      const supply = getSupply()
+      console.log("supply", supply)
+      // TODO: get all balances getter, add to state
+      const state = { owner, supply }
 
       // 3. save state snapshot
+      // console.log("e", e.height)
+      stateDB.put(e.height, state, (error) => {
+        if (error) console.log("could not write transaction to db")
+      })      
     },
   })
 }
