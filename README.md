@@ -1,6 +1,7 @@
 # gear-pla
-Planaria instance for contract state updates and event driven storage.
 ![engine](engine.jpg)
+
+Planaria/Planarium instance for contract state updates and event driven storage.
 ___
 
 ### RUN
@@ -11,3 +12,17 @@ ___
 3. `npm i && npm run start`
 
 ___
+
+### Block Handler
+`index.js` Planaria onBlock handler.
+```
+1. Stores all write transactions to transactionDB
+2. Parses and dispatches contract calls over wasm bridge
+3. Fetches state from getter functions and stores to stateDB
+```
+
+### Transactions
+`transactions.js` Planarium server for transactionDB.
+
+### State
+`state.js` Planarium server for stateDB.
