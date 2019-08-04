@@ -12,7 +12,7 @@ COPY ./state.js /mnt/state.js
 RUN mkdir /gear-bus
 RUN mkdir /gear-bus/bus
 COPY ./mockbus/ /gear-bus/bus
-#EXPOSE 3007
+#EXPOSE 3010 (stateDB)
 RUN echo start
 # be aware that user is root
 RUN npm install 
