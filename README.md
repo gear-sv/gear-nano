@@ -1,5 +1,5 @@
 # gear-pla
-![engine](engine.jpg)
+![engine](engine.jpeg)
 
 Planaria/Planarium instance for contract state updates and event driven storage.
 ___
