@@ -1,0 +1,19 @@
+{
+  "constructor": ["sean"],
+  "setters": {
+    "setOwner": {
+      "SENDER": "string",
+      "newOwner": "string"
+    },
+    "mint": {
+      "SENDER": "string",
+      "amount": "number"
+    },
+    "transfer": {
+      "SENDER": "string",
+      "recipient": "string",
+      "amount": "number"
+    }
+  },
+  "getters": ["getSupply", "getOwner", "getBalances"]
+}

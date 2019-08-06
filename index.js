@@ -1,7 +1,8 @@
 const { planaria } = require("neonplanaria")
 const level = require("level")
 const L = require("interlevel")
-const contractModule = require("./a.out.js")
+const contractModule = require("./contract/FungibleToken.out.js")
+const spec = require("./contract/FungibleToken.json")
 
 // transaction DB container
 let txDB
@@ -10,12 +11,7 @@ let txDB
 let stateDB
 
 // contract interface
-let getOwner
-let getSupply
-let getBalance
-let setOwner
-let mint
-let transfer
+let contract
 
 console.log("\n\n####################")
 console.log("#")
@@ -30,21 +26,16 @@ contractModule.onRuntimeInitialized = () => {
   console.log("# Contract Initialized")
   console.log("#")
   console.log("####################\n\n")
+
   planaria.start({
     // remote bitbus reference
     src: {
-      from: 591200,
-      path: `${process.cwd()}/../gear-bus/bus/589f29e8a632246397fd10d8bab746a5d35eb189118676c20673f82d1ca57ca7/`
+      from: 594280,
+      path: `${process.cwd()}/../gear-bus/bus/b26b0dbe1e06763f56d9a343f778f57c78798b0ab5fcce0a31258f12e0ce93ed/`
     },
     onstart: (e) => {
       // 1. instantiate contract
-      getOwner = contractModule.cwrap("getOwner", "string")
-      getSupply = contractModule.cwrap("getSupply", "number")
-      getBalance = contractModule.cwrap("getBalance", "number", ["string"])
-
-      setOwner = contractModule.cwrap("setOwner", "bool", ["string", "string"])
-      mint = contractModule.cwrap("mint", "bool", ["string", "number"])
-      transfer = contractModule.cwrap("transfer", "bool", ["string", "string", "number"])
+      contract = new contractModule.FungibleToken("1CDAfzAK8t6poNBv4K7uiMFyZKvoKdrS9q")
 
       // 2. instantiate transaction db
       txDB = level("txDB", { valueEncoding: "json" })
@@ -55,15 +46,20 @@ contractModule.onRuntimeInitialized = () => {
       L.server({ db: stateDB, port: 28336 })
     },
     onmempool: (e) => {
-      console.log("inside onmempool listener")
+      // do nothing on mempool
+      console.log('# on mempool', e)
     },
     onblock: (e) => {
-      console.log("inside onblock listener")
-
       // 1. send transaction in relative order to transaction db
       e.tx.forEach((transaction) => {
         txDB.put(transaction.tx.h, transaction, (error) => {
-          if (error) console.log("could not write transaction to db")
+          if (error) console.log("# could not write transaction to db")
+          if (error) console.log("# could not write state update to db")
+          console.log("\n\n####################")
+          console.log("#")
+          console.log(`# Transaction: ${transaction.tx.h}`)
+          console.log("#")
+          console.log("####################\n\n")
         })
       })
 
@@ -75,36 +71,43 @@ contractModule.onRuntimeInitialized = () => {
 
         switch (methodName) {
           case "setOwner":
-            setOwner(SENDER, ...params)
+            contract.setOwner(SENDER, ...params)
             break
           case "mint":
-            mint(SENDER, ...params)
+            contract.mint(SENDER, ...params)
             break
           case "transfer":
-            transfer(SENDER, ...params)
+            contract.transfer(SENDER, ...params)
             break
           default:
-            console.log("invalid method reference")
+            console.log("# invalid method reference")
             break
         }
       })
 
       // 3. fetch state from getters
-      const owner = getOwner()
-      const supply = getSupply()
-      // TODO: get all balances getter, add to state
-      const state = { owner, supply }
+      const owner = contract.getOwner()
+      const supply = contract.getSupply()
+
+      const rawBalances = contract.getBalances()
+      const balanceKeys = rawBalances.keys()
+      const balances = {}
+      for (let i = 0; i < balanceKeys.size(); i++) {
+        balances[balanceKeys.get(i)] = rawBalances.get(balanceKeys.get(i))
+      }
+
+      const state = { owner, supply, balances }
 
       // 3. save state snapshot by block number
       stateDB.put(e.height, state, (error) => {
-        if (error) console.log("could not write transaction to db")
+        if (error) console.log("# could not write state update to db")
         console.log("\n\n####################")
         console.log("#")
-        console.log("# State Updated")
+        console.log(`# State Updated: ${e.height}`)
         console.log("#")
-        console.log("#", state)
-        console.log("#")
-        console.log("####################\n\n")
+        console.log("####################\n")
+        console.log(state)
+        console.log("\n\n")
       })
     },
   })
