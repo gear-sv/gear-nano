@@ -13,7 +13,7 @@ planarium.start({
     let req = JSON.parse(code)
     if (req.get) {
       e.core.get(req.get, function(err, val) {
-        if (err) e.res.json({ error: "txid doesn't exist" })
+        if (err) e.res.json({ error: "transaaction id does not exist" })
         else e.res.json({ val: val })
       })
     } else {

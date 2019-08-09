@@ -13,7 +13,7 @@ planarium.start({
     let req = JSON.parse(code)
     if (req.get) {
       e.core.get(req.get, function(err, val) {
-        if (err) e.res.json({ error: "block doesn't exist" })
+        if (err) e.res.json({ error: "block height does not exist" })
         else e.res.json({ val: val })
       })
     } else {

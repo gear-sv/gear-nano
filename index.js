@@ -64,26 +64,7 @@ contractModule.onRuntimeInitialized = () => {
       })
 
       // 2. update state based on transactions
-      e.tx.forEach((transaction) => {
-        const methodName = transaction.out[0].s3
-        const params = JSON.parse(transaction.out[0].s4)
-        const SENDER = transaction.in[0].e.a
-
-        switch (methodName) {
-          case "setOwner":
-            contract.setOwner(SENDER, ...params)
-            break
-          case "mint":
-            contract.mint(SENDER, ...params)
-            break
-          case "transfer":
-            contract.transfer(SENDER, ...params)
-            break
-          default:
-            console.log("# invalid method reference")
-            break
-        }
-      })
+      e.tx.forEach((transaction) => updateState(transaction))
 
       // 3. fetch state from getters
       const owner = contract.getOwner()
@@ -111,4 +92,26 @@ contractModule.onRuntimeInitialized = () => {
       })
     },
   })
+}
+
+
+function updateState(transaction) {
+  const methodName = transaction.out[0].s3
+  const params = JSON.parse(transaction.out[0].s4)
+  const SENDER = transaction.in[0].e.a
+
+  switch (methodName) {
+    case "setOwner":
+      contract.setOwner(SENDER, ...params)
+      break
+    case "mint":
+      contract.mint(SENDER, ...params)
+      break
+    case "transfer":
+      contract.transfer(SENDER, ...params)
+      break
+    default:
+      console.log("# invalid method reference")
+      break
+  }
 }
