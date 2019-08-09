@@ -52,14 +52,20 @@ contractModule.onRuntimeInitialized = () => {
     onblock: (e) => {
       // 1. send transaction in relative order to transaction db
       e.tx.forEach((transaction) => {
-        txDB.put(transaction.tx.h, transaction, (error) => {
+        const tx = {
+          SENDER: transaction.in[0].e.a,
+          method: transaction.out[0].s3,
+          params: JSON.parse(transaction.out[0].s4)
+        }
+        txDB.put(transaction.tx.h, tx, (error) => {
           if (error) console.log("# could not write transaction to db")
           if (error) console.log("# could not write state update to db")
           console.log("\n\n####################")
           console.log("#")
           console.log(`# Transaction: ${transaction.tx.h}`)
           console.log("#")
-          console.log("####################\n\n")
+          console.log("####################\n")
+          console.log(tx)
         })
       })
 
