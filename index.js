@@ -55,7 +55,8 @@ contractModule.onRuntimeInitialized = () => {
         const tx = {
           SENDER: transaction.in[0].e.a,
           method: transaction.out[0].s3,
-          params: JSON.parse(transaction.out[0].s4)
+          params: JSON.parse(transaction.out[0].s4),
+          index: transaction.i
         }
         txDB.put(transaction.tx.h, tx, (error) => {
           if (error) console.log("# could not write transaction to db")
@@ -70,12 +71,11 @@ contractModule.onRuntimeInitialized = () => {
       })
 
       // 2. update state based on transactions
-      e.tx.forEach((transaction) => updateState(transaction))
+      const status = e.tx.map((transaction) => updateState(transaction))
 
       // 3. fetch state from getters
       const owner = contract.getOwner()
       const supply = contract.getSupply()
-
       const rawBalances = contract.getBalances()
       const balanceKeys = rawBalances.keys()
       const balances = {}
@@ -108,16 +108,13 @@ function updateState(transaction) {
 
   switch (methodName) {
     case "setOwner":
-      contract.setOwner(SENDER, ...params)
-      break
+      return contract.setOwner(SENDER, ...params)
     case "mint":
-      contract.mint(SENDER, ...params)
-      break
+      return contract.mint(SENDER, ...params)
     case "transfer":
-      contract.transfer(SENDER, ...params)
-      break
+      return contract.transfer(SENDER, ...params)
     default:
       console.log("# invalid method reference")
-      break
+      return "invalid"
   }
 }
