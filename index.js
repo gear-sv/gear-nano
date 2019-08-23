@@ -50,13 +50,18 @@ contractModule.onRuntimeInitialized = () => {
       console.log('# on mempool', e)
     },
     onblock: (e) => {
-      // 1. send transaction in relative order to transaction db
-      e.tx.forEach((transaction) => {
+
+      // 1. update state based on transactions
+      const status = e.tx.map((transaction) => updateState(transaction))
+      console.log(status)
+      // 2. send transaction in relative order to transaction db
+      e.tx.forEach((transaction, i) => {
         const tx = {
           SENDER: transaction.in[0].e.a,
           method: transaction.out[0].s3,
           params: JSON.parse(transaction.out[0].s4),
-          index: transaction.i
+          index: transaction.i,
+          status: status[i]
         }
         txDB.put(transaction.tx.h, tx, (error) => {
           if (error) console.log("# could not write transaction to db")
@@ -69,9 +74,6 @@ contractModule.onRuntimeInitialized = () => {
           console.log(tx)
         })
       })
-
-      // 2. update state based on transactions
-      const status = e.tx.map((transaction) => updateState(transaction))
 
       // 3. fetch state from getters
       const owner = contract.getOwner()
