@@ -2,6 +2,7 @@ const contractModule = require("./contract/FungibleToken.out.js")
 const { planaria } = require("neonplanaria")
 const level = require("level")
 const L = require("interlevel")
+const { exec } = require("child_process")
 
 let txDB
 
@@ -119,12 +120,11 @@ const getState = (method, returnType) => {
   }
 }
 
-const txServer = (port) => {
-
+const createServer = (serverPort, clientPort, name) => {
+  exec(`GEARIA_SERVER_PORT=${serverPort} GEARIA_NAME=${name} GEARIA_CLIENT_PORT=${clientPort} node server.js`, (error, stdout, stderr) => {
+    if (error) console.log("### Error in ", name, error)
+    else console.log("#### stdout:", stdout)
+  })
 }
 
-const stateServer = (port) => {
-
-}
-
-module.exports = gearia
+module.exports = { gearia, createServer }
