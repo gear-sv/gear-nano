@@ -54,6 +54,7 @@ contractModule.onRuntimeInitialized = () => {
       // 1. update state based on transactions
       const status = e.tx.map((transaction) => updateState(transaction))
       console.log(status)
+      
       // 2. send transaction in relative order to transaction db
       e.tx.forEach((transaction, i) => {
         const tx = {

@@ -1,4 +1,4 @@
-const { gearia, createServer } = require("./gearia.js")
+const { gearia, createServer } = require("../gearia")
 
 const getters = {
   getOwner: "string",

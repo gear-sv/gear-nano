@@ -1,8 +1,8 @@
 {
-  "name": "gear-pla",
+  "name": "gearia",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "gearia.js",
   "scripts": {
     "start": "node index & node state",
     "clear": ". ./clear"
