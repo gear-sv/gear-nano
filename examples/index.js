@@ -31,7 +31,7 @@ contractModule.onRuntimeInitialized = () => {
     // remote bitbus reference
     src: {
       from: 594280,
-      path: `${process.cwd()}/../gear-bus/bus/b26b0dbe1e06763f56d9a343f778f57c78798b0ab5fcce0a31258f12e0ce93ed/`
+      path: `${process.cwd()}/${busPath}`
     },
     onstart: (e) => {
       // 1. instantiate contract
@@ -54,7 +54,7 @@ contractModule.onRuntimeInitialized = () => {
       // 1. update state based on transactions
       const status = e.tx.map((transaction) => updateState(transaction))
       console.log(status)
-      
+
       // 2. send transaction in relative order to transaction db
       e.tx.forEach((transaction, i) => {
         const tx = {

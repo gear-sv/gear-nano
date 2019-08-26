@@ -1,4 +1,4 @@
-const contractModule = require("./contract/FungibleToken.out.js")
+const contractModule = require(`${process.cwd()}/contract/FungibleToken.out.js`)
 const { planaria } = require("neonplanaria")
 const level = require("level")
 const L = require("interlevel")
@@ -10,14 +10,14 @@ let stateDB
 
 let contract
 
-const gearia = (txPort, statePort, getters) => {
+const gearia = (txPort, statePort, getters, busPath) => {
 
   contractModule.onRuntimeInitialized = () => {
     console.log("contract Initialized")
     planaria.start({
       src: {
         from: 594280,
-        path: `${process.cwd()}/../gear-bus/bus/b26b0dbe1e06763f56d9a343f778f57c78798b0ab5fcce0a31258f12e0ce93ed/`
+        path: `${process.cwd()}/../../gear-bus/bus/b26b0dbe1e06763f56d9a343f778f57c78798b0ab5fcce0a31258f12e0ce93ed/`
       },
       onstart: (e) => {
         contract = new contractModule.FungibleToken("1CDAfzAK8t6poNBv4K7uiMFyZKvoKdrS9q")
@@ -121,7 +121,7 @@ const getState = (method, returnType) => {
 }
 
 const createServer = (serverPort, clientPort, name) => {
-  exec(`GEARIA_SERVER_PORT=${serverPort} GEARIA_NAME=${name} GEARIA_CLIENT_PORT=${clientPort} node server.js`, (error, stdout, stderr) => {
+  exec(`GEARIA_SERVER_PORT=${serverPort} GEARIA_NAME=${name} GEARIA_CLIENT_PORT=${clientPort} node ${__dirname}/server.js`, (error, stdout, stderr) => {
     if (error) console.log("### Error in ", name, error)
     else console.log("#### stdout:", stdout)
   })
