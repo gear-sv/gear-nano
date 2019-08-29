@@ -17,7 +17,7 @@ const gearia = (txPort, statePort, getters, busPath) => {
     planaria.start({
       src: {
         from: 594280,
-        path: `${process.cwd()}/../../gear-bus/bus/b26b0dbe1e06763f56d9a343f778f57c78798b0ab5fcce0a31258f12e0ce93ed/`
+        path: `${process.cwd()}/${busPath}`
       },
       onstart: (e) => {
         contract = new contractModule.FungibleToken("1CDAfzAK8t6poNBv4K7uiMFyZKvoKdrS9q")
