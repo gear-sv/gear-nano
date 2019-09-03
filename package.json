@@ -20,6 +20,6 @@
   "dependencies": {
     "interlevel": "0.0.6",
     "level": "^5.0.1",
-    "neonplanaria": "0.0.19"
+    "neonplanaria": "0.0.39"
   }
 }
