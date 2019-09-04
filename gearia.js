@@ -14,6 +14,8 @@ let contract
 
 const gearInit = (contractID, getters ) => {
 
+// initializer will go here!! 
+
 const machineConfig = await(`${process.cwd()}/gear-${contractID}/contracts/FungibleToken.out.js`)
 
   contractModule.onRuntimeInitialized = () => {
