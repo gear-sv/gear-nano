@@ -10,14 +10,22 @@ let stateDB
 
 let contract
 
-const gearia = (txPort, statePort, getters, busPath) => {
+const gearia = (txPort, statePort, getters, contractID) => {
 
   contractModule.onRuntimeInitialized = () => {
     console.log("contract Initialized")
     planaria.start({
-      src: {
-        from: 594280,
-        path: `${process.cwd()}/${busPath}`
+      filter: {
+        from: 591200,
+        host: {
+          bitbus: "https://bitbus.network",
+        },
+        q: {
+          "find": {
+            "out.s1": "gear.sv",
+            "out.s2": contractID
+          }
+        }
       },
       onstart: (e) => {
         contract = new contractModule.FungibleToken("1CDAfzAK8t6poNBv4K7uiMFyZKvoKdrS9q")
