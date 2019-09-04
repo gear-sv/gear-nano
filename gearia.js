@@ -10,7 +10,7 @@ let stateDB
 
 let contract
 
-const gearia = (txPort, statePort, contractID, getters, _constructor, startBlock) => {
+const gearia = (contractID, getters, _constructor, startBlock) => {
 
   contractModule.onRuntimeInitialized = () => {
     console.log("# Contract Initialized")
@@ -31,10 +31,10 @@ const gearia = (txPort, statePort, contractID, getters, _constructor, startBlock
         contract = new contractModule.FungibleToken(..._constructor)
 
         txDB = level("txDB", { valueEncoding: "json" })
-        L.server({ db: txDB, port: txPort })
+        L.server({ db: txDB, port: 28335 })
 
         stateDB = level("stateDB", { valueEncoding: "json" })
-        L.server({ db: stateDB, port: stateDB })
+        L.server({ db: stateDB, port: 28336 })
       },
       onblock: (e) => {
         // 1. update contract with method calls
