@@ -127,7 +127,9 @@ const getState = (method, returnType) => {
   }
 }
 
-const createServer = (serverPort, clientPort, name) => {
+const createServer = (name) => {
+  const serverPort = (name === "TxDB") ? 3009 : 3010
+  const clientPort = (name === "TxDB") ? 28335 : 28336
   exec(`GEARIA_SERVER_PORT=${serverPort} GEARIA_NAME=${name} GEARIA_CLIENT_PORT=${clientPort} node ${__dirname}/server.js`, (error, stdout, stderr) => {
     if (error) console.log("### Error in ", name, error)
     else console.log("#### stdout:", stdout)

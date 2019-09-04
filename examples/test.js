@@ -12,7 +12,7 @@ const _constructor = ["1CDAfzAK8t6poNBv4K7uiMFyZKvoKdrS9q"]
 gearia("63eec681025b07b9aa9d3720a125ce33dfd46e0b940a518100811c1f4eea86f0", getters, _constructor, 591200)
 
 // 2. run transaction server
-createServer(3009, 28335, "TxDB")
+createServer("TxDB")
 
 // 3. run state server
-createServer(3010, 28336, "StateDB")
+createServer("StateDB")
