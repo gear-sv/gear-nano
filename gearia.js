@@ -10,13 +10,13 @@ let stateDB
 
 let contract
 
-const gearia = (txPort, statePort, getters, contractID) => {
+const gearia = (txPort, statePort, contractID, getters, _constructor, startBlock) => {
 
   contractModule.onRuntimeInitialized = () => {
-    console.log("contract Initialized")
+    console.log("# Contract Initialized")
     planaria.start({
       filter: {
-        from: 591200,
+        from: startBlock,
         host: {
           bitbus: "https://bitbus.network",
         },
@@ -28,7 +28,7 @@ const gearia = (txPort, statePort, getters, contractID) => {
         }
       },
       onstart: (e) => {
-        contract = new contractModule.FungibleToken("1CDAfzAK8t6poNBv4K7uiMFyZKvoKdrS9q")
+        contract = new contractModule.FungibleToken(..._constructor)
 
         txDB = level("txDB", { valueEncoding: "json" })
         L.server({ db: txDB, port: txPort })
@@ -39,7 +39,6 @@ const gearia = (txPort, statePort, getters, contractID) => {
       onblock: (e) => {
         // 1. update contract with method calls
         const status = e.tx.map(transaction => updateState(transaction))
-        console.log(status)
 
         // 2. save transactions
         e.tx.forEach((transaction, i) => {
