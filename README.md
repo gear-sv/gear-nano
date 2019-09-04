@@ -1,5 +1,5 @@
 # gearia ⚙️
-![engine](engine.jpg)
+![engine](engine.jpeg)
 
 Planaria instance for contract state updates and event driven storage.
 ___

@@ -1,4 +1,5 @@
-const contractModule = require(`${process.cwd()}/contract/FungibleToken.out.js`)
+
+const { initializeMachine } = require("./initializer.js")
 const { planaria } = require("neonplanaria")
 const level = require("level")
 const L = require("interlevel")
@@ -10,7 +11,10 @@ let stateDB
 
 let contract
 
-const gearia = (contractID, getters, _constructor, startBlock) => {
+
+const gearInit = (contractID, getters ) => {
+
+const machineConfig = await(`${process.cwd()}/gear-${contractID}/contracts/FungibleToken.out.js`)
 
   contractModule.onRuntimeInitialized = () => {
     console.log("# Contract Initialized")
@@ -130,10 +134,11 @@ const getState = (method, returnType) => {
 const createServer = (name) => {
   const serverPort = (name === "TxDB") ? 3009 : 3010
   const clientPort = (name === "TxDB") ? 28335 : 28336
-  exec(`GEARIA_SERVER_PORT=${serverPort} GEARIA_NAME=${name} GEARIA_CLIENT_PORT=${clientPort} node ${__dirname}/server.js`, (error, stdout, stderr) => {
+  exec(`GEAR_SERVER_PORT=${serverPort} GEAR_NAME=${name} GEAR_CLIENT_PORT=${clientPort} node ${__dirname}/server.js`, (error, stdout, stderr) => {
     if (error) console.log("### Error in ", name, error)
     else console.log("#### stdout:", stdout)
   })
 }
 
-module.exports = { gearia, createServer }
+
+module.exports = { gearInit, createServer }

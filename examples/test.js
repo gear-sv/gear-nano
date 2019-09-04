@@ -1,4 +1,6 @@
-const { gearia, createServer } = require("../gearia")
+const { gearInit, createServer } = require("../gearia")
+const initializer = require("../initializer.js")
+
 
 const getters = {
   getOwner: "string",
@@ -6,13 +8,17 @@ const getters = {
   getBalances: "map"
 }
 
-const _constructor = ["1CDAfzAK8t6poNBv4K7uiMFyZKvoKdrS9q"]
+// init machineConfig
+//initializeMachine("73cc7dd4937af750aa824f7b0f297e9fe7cca744379d08be74e738f7aa5d9afb")
+
+//fetchBlueprint
+
 
 // 1. run block handler
-gearia("63eec681025b07b9aa9d3720a125ce33dfd46e0b940a518100811c1f4eea86f0", getters, _constructor, 591200)
+//gearia("63eec681025b07b9aa9d3720a125ce33dfd46e0b940a518100811c1f4eea86f0", getters)
 
 // 2. run transaction server
-createServer("TxDB")
+//createServer("TxDB")
 
 // 3. run state server
-createServer("StateDB")
+//createServer("StateDB")
