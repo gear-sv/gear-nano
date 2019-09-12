@@ -11,15 +11,17 @@
     "type": "git",
     "url": "git+https://github.com/gear-sv/gear-pla.git"
   },
-  "author": "Sean Pollock",
-  "license": "MIT",
+  "authors": "Sean Pollock & Glenn Wolfe",
+  "license": "OpenBSV",
   "bugs": {
     "url": "https://github.com/gear-sv/gear-pla/issues"
   },
   "homepage": "https://github.com/gear-sv/gear-pla#readme",
   "dependencies": {
+    "axios": "^0.19.0",
     "interlevel": "0.0.6",
     "level": "^5.0.1",
-    "neonplanaria": "0.0.19"
+    "neonplanaria": "0.0.19",
+    "node-jq": "^1.10.3"
   }
 }
