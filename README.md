@@ -6,7 +6,7 @@ ___
 
 ## Node
 
-Simply, npm i gearia -S 
+Simply, `npm i gearia -S` 
 
 ```
 const { gearia, createServer } = require("gearia")
@@ -18,7 +18,7 @@ const getters = {
 }
 
 // 1. run block handler
-gearia('<transaction-id-of-contract>')
+gearia('<contract-txid>')
 
 // 2. run transaction server
 createServer('tx')
@@ -27,4 +27,8 @@ createServer('tx')
 createServer('state')
 
 ```
+
+## TODO: Docker
+
+docker run <onchain-gearia> TX_ID=<contract-txid>  
 ___
