@@ -1,4 +1,4 @@
-//TODO: Use axios / node-jq for HTTP requests and filtering. Eliminate 'exec' calls. 
+//TODO: Use axios / node-jq for HTTP requests and filtering. Eliminate 'exec' calls.
 
 const { exec } = require("child_process")
 const fs = require('fs')
