@@ -1,13 +1,23 @@
 # gearia ⚙️
-![engine](engine.jpeg)
+![engine](engine.jpg)
 
 Planaria instance for contract state updates and event driven storage.
 
 ___
 
-### Node
+### cli
 
-`npm i gearia -S` 
+`npm i gearia -g`
+
+```
+1. gearia [contractID]
+...
+```
+
+### npm module
+
+`npm i gearia -S`
+
 ```
 const { gearia, createServer } = require("gearia")
 
@@ -18,13 +28,13 @@ const getters = {
 }
 
 // 1. run block handler
-gearia('<contract-txid>')
+gearia(contractID, getters, _constructor, startBlock)
 
 // 2. run transaction server
-createServer('tx')
+createServer('TxDB')
 
 // 3. run state server
-createServer('state')
+createServer('StateDB')
 
 ```
 
