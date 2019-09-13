@@ -1,5 +1,5 @@
 # gearia ⚙️
-![gears](Planetary-gears.gif)
+![gears](cog-wheel.gif)
 
 Planaria instance for contract state updates and event driven storage.
 
