@@ -1,8 +1,9 @@
 {
-  "name": "gearia",
+  "name": "gear-nano",
   "version": "0.0.1",
   "description": "",
-  "main": "gearia.js",
+  "main": "index.js",
+  "bin": "bin/cli.js",
   "scripts": {
     "start": "node index & node state",
     "clear": ". ./clear"
@@ -19,6 +20,7 @@
   "homepage": "https://github.com/gear-sv/gear-pla#readme",
   "dependencies": {
     "axios": "^0.19.0",
+    "inquirer": "^7.0.0",
     "interlevel": "0.0.6",
     "level": "^5.0.1",
     "neonplanaria": "0.0.19",
