@@ -4,9 +4,10 @@ const program = require("commander")
 const { exec } = require("child_process")
 const util = require("util")
 const readFile = util.promisify(require("fs").readFile)
-
+//
 const { initializeMachine } = require("./initializer.js")
-// const { gearia, createServer } = require("./gearia.js")
+const { gearia, createServer } = require("./gearia.js")
+const { getModule, dynamicRequire, fetchABI } = require("./processor.js")
 
 /*******************************************
 *
@@ -51,12 +52,42 @@ program
 program
   .command("processor")
   .action(async () => {
-    console.log("starting processor")
+    console.log(`
+#################################################################
+#
+#   Processor: starting contract engine
+#
+#################################################################
+    `)
+
     // 1. fetch config
     let config = await readFile(`${process.cwd()}/config.json`)
     config = JSON.parse(config.toString())
-    console.log("config", config)
-    // 2. start processor
+    console.table(config)
+
+    console.log(`
+#################################################################
+#
+#   Initializing Emscripten Module
+#
+#################################################################
+    `)
+
+    // 2. fetch module
+    const code = await getModule("FungibleToken")
+    const contractModule = dynamicRequire(code, config.transactionID, )
+
+    // 3. fetch getters and constructor
+    const getters = await fetchABI("FungibleToken")
+    const constructor = ['sean']
+
+    console.log("### successfully compiled emscripten module")
+
+    // 3. start processor
+    gearia(contractModule, config.transactionID, getters, constructor, config.blockHeight)
+
+    console.log(contractModule, config.transactionID, getters, constructor, config.blockHeight)
+
   })
 
 program

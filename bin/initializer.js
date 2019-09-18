@@ -59,7 +59,7 @@ const fetchBlockHeight = (blockhash) => {
     exec(`curl https://api.whatsonchain.com/v1/bsv/main/block/hash/${blockhash} | jq '.height'`,
         (error, stdout, stderr) => {
         if (error) console.log("### problem fetching blockhash from on chain", error)
-        resolve(stdout)
+        resolve(stdout.slice(0,-1))
       })
   })
 }
