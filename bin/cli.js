@@ -4,7 +4,7 @@ const program = require("commander")
 const { exec } = require("child_process")
 const util = require("util")
 const readFile = util.promisify(require("fs").readFile)
-//
+
 const { initializeMachine } = require("./initializer.js")
 const { gearia, createServer } = require("./gearia.js")
 const { getModule, dynamicRequire, fetchABI } = require("./processor.js")
@@ -48,6 +48,12 @@ program
       `)
     })
   })
+
+/*******************************************
+*
+* $ gear-nano processor
+*
+*******************************************/
 
 program
   .command("processor")
@@ -96,6 +102,12 @@ program
 
   })
 
+/*******************************************
+*
+* $ gear-nano state
+*
+*******************************************/
+
 program
   .command("state")
   .action(() => {
@@ -109,6 +121,12 @@ program
     `)
     createServer("StateDB")
   })
+
+/*******************************************
+*
+* $ gear-nano transactions
+*
+*******************************************/
 
 program
   .command("transactions")
