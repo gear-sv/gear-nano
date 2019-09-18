@@ -83,10 +83,16 @@ program
 
     console.log("### successfully compiled emscripten module")
 
+    console.log(`
+#################################################################
+#
+#   Processor: starting block handler
+#
+#################################################################
+    `)
+
     // 3. start processor
     gearia(contractModule, config.transactionID, getters, constructor, config.blockHeight)
-
-    console.log(contractModule, config.transactionID, getters, constructor, config.blockHeight)
 
   })
 
@@ -94,12 +100,27 @@ program
   .command("state")
   .action(() => {
     console.log("state")
+    console.log(`
+#################################################################
+#
+#   State: LevelDB and Http Server
+#
+#################################################################
+    `)
+    createServer("StateDB")
   })
 
 program
   .command("transactions")
   .action(() => {
-    console.log("transactions")
+    console.log(`
+#################################################################
+#
+#   Tx: LevelDB and Http Server
+#
+#################################################################
+    `)
+    createServer("TxDB")
   })
 
 program
