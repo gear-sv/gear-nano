@@ -1,18 +1,19 @@
 
 //TODO: Use axios / node-jq for HTTP requests and filtering. Eliminate 'exec' calls.
-
+const util = require("util")
 const { exec } = require("child_process")
-const fs = require('fs')
-const jq = require('node-jq')
+const fs = require("fs")
+const writeFile = util.promisify(require("fs").writeFile)
 const axios = require("axios")
 const txo = require("txo")
+const tar = require("tar")
 
 const initializeMachine = async (transactionID) => {
   const blockHash = await fetchBlockHash(transactionID)
   const blockHeight = await fetchBlockHeight(blockHash)
   const constructor = fetchConstructor(transactionID)
 
-  await fetchBlueprint(transactionID)
+  await fetchPackage(transactionID)
 
   await createConfig({
     transactionID,
@@ -22,46 +23,45 @@ const initializeMachine = async (transactionID) => {
   })
 }
 
-const verifyEnv = () => {
-  if (process.env.TRANSACTION_ID !== 'undefined') {
-    let transaction_id = process.env.TRANSACTION_ID
-    //console.log('contract specified @ '+transaction_id);
-    return transaction_id;
-  }
-  return console.error('please speicify contract transaction ID by setting TRANSACTION_ID env variable');
-}
-
-const fetchBlueprint = (transaction_id) => {
+const fetchPackage = (transactionID) => {
   return new Promise((resolve, reject) => {
-    exec(`curl https://bico.media/${transaction_id} > gear-${transaction_id}.tar.gz && tar -xvzf gear-${transaction_id}.tar.gz`,
-      (error, stdout, stderr) => {
-      if (error) console.log("#### problem fetching machine configuration from on chain", error)
-      console.log(stderr)
-      resolve(true)
+    axios.request({
+      responseType: 'arraybuffer',
+      url: `https://bico.media/${transactionID}`,
+      method: 'get',
+    })
+    .then((response) => {
+      const { data } = response
+      fs.writeFileSync(`${process.cwd()}/gear-${transactionID}.tar.gz`, Buffer.from(data, "utf-8"))
+    }).then(() => {
+      return tar.x({ file: `gear-${transactionID}.tar.gz`})
+    }).then(() => {
+      console.log(process.cwd())
+      console.log(`
+#################################################################
+#
+#   Pulled contract package from the blockchain
+#
+#################################################################
+      `)
+    }).catch((error) => {
+      reject(error)
     })
   })
+
+  console.log(response)
 }
 
-const fetchBlockHash = (transaction_id) => {
-  return new Promise((resolve, reject) => {
-    exec(`curl https://api.whatsonchain.com/v1/bsv/main/tx/hash/${transaction_id} | jq '.blockhash'`,
-        (error, stdout, stderr) => {
-        if (error) console.log("#### problem fetching blockhash from on chain", error)
-        console.log("stdout", stdout)
-        resolve(stdout.replace(`"`, "").replace(`"`, "").slice(0,-1))
-      })
-  })
+const fetchBlockHash = async (transactionID) => {
+  const response = await axios.get(`https://api.whatsonchain.com/v1/bsv/main/tx/hash/${transactionID}`)
+  const { data: { blockhash }} = response
+  return blockhash
 }
 
-// This may be redundant and waste of time to get Blockheight every time, we may just want to start from a standard blockheight.
-const fetchBlockHeight = (blockhash) => {
-  return new Promise((resolve, reject) => {
-    exec(`curl https://api.whatsonchain.com/v1/bsv/main/block/hash/${blockhash} | jq '.height'`,
-        (error, stdout, stderr) => {
-        if (error) console.log("### problem fetching blockhash from on chain", error)
-        resolve(stdout.slice(0,-1))
-      })
-  })
+const fetchBlockHeight = async (blockhash) => {
+  const response = await axios.get(`https://api.whatsonchain.com/v1/bsv/main/block/hash/${blockhash}`)
+  const { data: { height }} = response
+  return height
 }
 
 const fetchConstructor = async (transactionID) => {
@@ -84,8 +84,5 @@ const createConfig = (config) => {
 }
 
 module.exports = {
-  initializeMachine,
-  fetchBlueprint,
-  fetchConstructor,
-  verifyEnv
+  initializeMachine
 }
