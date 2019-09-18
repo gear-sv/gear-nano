@@ -85,7 +85,6 @@ program
 
     // 3. fetch getters and constructor
     const getters = await fetchABI("FungibleToken")
-    const constructor = ['sean']
 
     console.log("### successfully compiled emscripten module")
 
@@ -98,7 +97,7 @@ program
     `)
 
     // 3. start processor
-    gearia(contractModule, config.transactionID, getters, constructor, config.blockHeight)
+    gearia(contractModule, config.transactionID, getters, config.constructor, config.blockHeight)
 
   })
 

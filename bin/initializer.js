@@ -4,21 +4,21 @@
 const { exec } = require("child_process")
 const fs = require('fs')
 const jq = require('node-jq')
+const axios = require("axios")
+const txo = require("txo")
 
 const initializeMachine = async (transactionID) => {
   const blockHash = await fetchBlockHash(transactionID)
   const blockHeight = await fetchBlockHeight(blockHash)
-
-  // const constructor = fetchConstructor(transactionID)
+  const constructor = fetchConstructor(transactionID)
 
   await fetchBlueprint(transactionID)
-
-  // fetchConstructor(transaction_id)
 
   await createConfig({
     transactionID,
     blockHash,
-    blockHeight
+    blockHeight,
+    constructor
   })
 }
 
@@ -47,11 +47,11 @@ const fetchBlockHash = (transaction_id) => {
     exec(`curl https://api.whatsonchain.com/v1/bsv/main/tx/hash/${transaction_id} | jq '.blockhash'`,
         (error, stdout, stderr) => {
         if (error) console.log("#### problem fetching blockhash from on chain", error)
+        console.log("stdout", stdout)
         resolve(stdout.replace(`"`, "").replace(`"`, "").slice(0,-1))
       })
   })
 }
-
 
 // This may be redundant and waste of time to get Blockheight every time, we may just want to start from a standard blockheight.
 const fetchBlockHeight = (blockhash) => {
@@ -64,17 +64,13 @@ const fetchBlockHeight = (blockhash) => {
   })
 }
 
+const fetchConstructor = async (transactionID) => {
+  const response = await axios.get(`https://api.whatsonchain.com/v1/bsv/main/tx/hash/${transactionID}`)
+  const { data: { hex }} = response
+  const tx = await txo.fromTx(hex)
 
-const fetchConstructor = (transaction_id) => {
-  return new Promise((resolve, reject) => {
-    exec(`curl https://api.whatsonchain.com/v1/bsv/main/tx/hash/${transaction_id} | jq '.vout[1].scriptPubKey.addresses[0]'`, (error, stdout, stderr) => {
-        if (error) console.log("### problem fetching machine configuration from on chain", error)
-        console.log(stdout);
-        resolve(stdout.length)
-      })
-  })
+  return ([tx.out[0].s3])
 }
-
 
 const createConfig = (config) => {
   return new Promise((resolve, reject) => {
@@ -86,22 +82,6 @@ const createConfig = (config) => {
     })
   })
 }
-
-//console.log('running integration tests: ')
-
-// console.log(fetchBlueprint(verifyEnv()))
-//
-// const transaction_id = verifyEnv()
-// console.log('transaction id: '+transaction_id )
-//
-// let blockheight = fetchBlockHeight('000000000000000008918bde84f934d87e7df0fa56c2d9b2dd633b4e7cd568bc')
-// console.log('blockheight: '+blockheight)
-//
-// let machineConfig = fetchConstructor('73cc7dd4937af750aa824f7b0f297e9fe7cca744379d08be74e738f7aa5d9afb')
-// console.log('machineConfig: '+machineConfig)
-
-
-
 
 module.exports = {
   initializeMachine,
