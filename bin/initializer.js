@@ -1,5 +1,4 @@
 
-//TODO: Use axios / node-jq for HTTP requests and filtering. Eliminate 'exec' calls.
 const util = require("util")
 const { exec } = require("child_process")
 const fs = require("fs")
@@ -29,14 +28,12 @@ const fetchPackage = (transactionID) => {
       responseType: 'arraybuffer',
       url: `https://bico.media/${transactionID}`,
       method: 'get',
-    })
-    .then((response) => {
+    }).then((response) => {
       const { data } = response
       fs.writeFileSync(`${process.cwd()}/gear-${transactionID}.tar.gz`, Buffer.from(data, "utf-8"))
     }).then(() => {
       return tar.x({ file: `gear-${transactionID}.tar.gz`})
     }).then(() => {
-      console.log(process.cwd())
       console.log(`
 #################################################################
 #
@@ -68,7 +65,6 @@ const fetchConstructor = async (transactionID) => {
   const response = await axios.get(`https://api.whatsonchain.com/v1/bsv/main/tx/hash/${transactionID}`)
   const { data: { hex }} = response
   const tx = await txo.fromTx(hex)
-
   return ([tx.out[0].s3])
 }
 
