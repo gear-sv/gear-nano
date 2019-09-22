@@ -10,7 +10,7 @@ const tar = require("tar")
 const initializeMachine = async (transactionID) => {
   const blockHash = await fetchBlockHash(transactionID)
   const blockHeight = await fetchBlockHeight(blockHash)
-  const constructor = fetchConstructor(transactionID)
+  const constructor = await fetchConstructor(transactionID)
 
   await fetchPackage(transactionID)
 
@@ -18,7 +18,7 @@ const initializeMachine = async (transactionID) => {
     transactionID,
     blockHash,
     blockHeight,
-    constructor
+    constructor: JSON.stringify(constructor)
   })
 }
 
@@ -41,6 +41,7 @@ const fetchPackage = (transactionID) => {
 #
 #################################################################
       `)
+      resolve(true)
     }).catch((error) => {
       reject(error)
     })
