@@ -1,7 +1,7 @@
 const { planaria } = require("neonplanaria")
 const level = require("level")
 const L = require("interlevel")
-const { exec } = require("child_process")
+const { exec, spawn } = require("child_process")
 
 let txDB
 
@@ -28,8 +28,11 @@ const gearia = (contractModule, contractID, getters, _constructor, startBlock) =
         }
       },
       onstart: (e) => {
+        console.log("event:",e)
+        console.log("constructor:",_constructor)
         console.log("on start")
-        contract = new contractModule.FungibleToken(..._constructor)
+        contract = new contractModule.FungibleToken(...JSON.parse(_constructor))
+
 
         txDB = level("txDB", { valueEncoding: "json" })
         L.server({ db: txDB, port: 28335 })
@@ -132,8 +135,10 @@ const createServer = (name) => {
   const serverPort = (name === "TxDB") ? 3009 : 3010
   const clientPort = (name === "TxDB") ? 28335 : 28336
   exec(`GEARIA_SERVER_PORT=${serverPort} GEARIA_NAME=${name} GEARIA_CLIENT_PORT=${clientPort} node ${__dirname}/server.js`, (error, stdout, stderr) => {
+    console.log("vars",serverPort,clientPort)
     if (error) console.log("### Error in ", name, error)
     else console.log("#### stdout:", stdout)
+         console.log("stderr", stderr)
   })
 }
 

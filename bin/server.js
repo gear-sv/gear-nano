@@ -1,12 +1,15 @@
 const { planarium } = require('neonplanaria')
 const L = require('interlevel')
+console.log("ENV (name,server,client): ", process.env.GEARIA_NAME, process.env.GEARIA_SERVER_PORT, process.env.GEARIA_CLIENT_PORT)
+
 
 planarium.start({
-  name: process.GEARIA_NAME,
-  port: process.GEARIA_SERVER_PORT,
+  name: process.env.GEARIA_NAME,
+  port: process.env.GEARIA_SERVER_PORT,
+
   default: {}, // empty default
   onstart: () => {
-    return L.client({ host: "127.0.0.1", port: process.GEARIA_CLIENT_PORT})
+    return L.client({ host: "127.0.0.1", port: process.env.GEARIA_CLIENT_PORT})
   },
   onquery: () => {
     let code = Buffer.from(e.query, 'base64').toString()

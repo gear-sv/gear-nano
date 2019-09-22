@@ -3,3 +3,8 @@ package-lock.json
 stateDB
 tape.txt
 txDB
+bus
+.env
+gear-cc961d4664cc7f2eac11543f6a38ff8103ed8a8fbac51cb673e693415d6fbcda.tar.gz
+tmp
+config.json
