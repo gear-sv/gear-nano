@@ -29,58 +29,58 @@ const gearia = (contractModule, contractID, getters, _constructor, startBlock) =
       },
       onstart: (e) => {
         console.log("on start")
-        // contract = new contractModule.FungibleToken(..._constructor)
-        //
-        // txDB = level("txDB", { valueEncoding: "json" })
-        // L.server({ db: txDB, port: 28335 })
-        //
-        // stateDB = level("stateDB", { valueEncoding: "json" })
-        // L.server({ db: stateDB, port: 28336 })
+        contract = new contractModule.FungibleToken(..._constructor)
+
+        txDB = level("txDB", { valueEncoding: "json" })
+        L.server({ db: txDB, port: 28335 })
+
+        stateDB = level("stateDB", { valueEncoding: "json" })
+        L.server({ db: stateDB, port: 28336 })
       },
       onblock: (e) => {
-        // // 1. update contract with method calls
-        // const status = e.tx.map(transaction => updateState(transaction))
-        //
-        // // 2. save transactions
-        // e.tx.forEach((transaction, i) => {
-        //   const tx = {
-        //     SENDER: transaction.in[0].e.a,
-        //     method: transaction.out[0].s3,
-        //     params: JSON.parse(transaction.out[0].s4),
-        //     index: transaction.i,
-        //     status: status[i]
-        //   }
-        //
-        //   txDB.put(transaction.tx.h, tx, (error) => {
-        //     if (error) console.log("# could not write transaction to db")
-        //     if (error) console.log("# could not write state update to db")
-        //     console.log("\n\n####################")
-        //     console.log("#")
-        //     console.log(`# Transaction: ${transaction.tx.h}`)
-        //     console.log("#")
-        //     console.log("####################\n")
-        //     console.log(tx)
-        //   })
-        // })
-        //
-        // // 3. save contract state
-        // const stateObj = Object.keys(getters).reduce((accumulator, getter) => {
-        //   const state = getState(getter, getters[getter])
-        //   accumulator[getter] = state
-        //   return accumulator
-        // }, {})
-        //
-        // // 3. save state snapshot by block number
-        // stateDB.put(e.height, stateObj, (error) => {
-        //   if (error) console.log("# could not write state update to db")
-        //   console.log("\n\n####################")
-        //   console.log("#")
-        //   console.log(`# State Updated: ${e.height}`)
-        //   console.log("#")
-        //   console.log("####################\n")
-        //   console.log(stateObj)
-        //   console.log("\n\n")
-        // })
+        // 1. update contract with method calls
+        const status = e.tx.map(transaction => updateState(transaction))
+
+        // 2. save transactions
+        e.tx.forEach((transaction, i) => {
+          const tx = {
+            SENDER: transaction.in[0].e.a,
+            method: transaction.out[0].s3,
+            params: JSON.parse(transaction.out[0].s4),
+            index: transaction.i,
+            status: status[i]
+          }
+
+          txDB.put(transaction.tx.h, tx, (error) => {
+            if (error) console.log("# could not write transaction to db")
+            if (error) console.log("# could not write state update to db")
+            console.log("\n\n####################")
+            console.log("#")
+            console.log(`# Transaction: ${transaction.tx.h}`)
+            console.log("#")
+            console.log("####################\n")
+            console.log(tx)
+          })
+        })
+
+        // 3. save contract state
+        const stateObj = Object.keys(getters).reduce((accumulator, getter) => {
+          const state = getState(getter, getters[getter])
+          accumulator[getter] = state
+          return accumulator
+        }, {})
+
+        // 3. save state snapshot by block number
+        stateDB.put(e.height, stateObj, (error) => {
+          if (error) console.log("# could not write state update to db")
+          console.log("\n\n####################")
+          console.log("#")
+          console.log(`# State Updated: ${e.height}`)
+          console.log("#")
+          console.log("####################\n")
+          console.log(stateObj)
+          console.log("\n\n")
+        })
       }
     })
   }
