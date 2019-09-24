@@ -65,40 +65,11 @@ program
 #
 #################################################################
     `)
-
-    // 1. fetch config
-    let config = await readFile(`${process.cwd()}/config.json`)
-    config = JSON.parse(config.toString())
-    console.table(config)
-
-    console.log(`
-#################################################################
-#
-#   Initializing Emscripten Module
-#
-#################################################################
-    `)
-
-    // 2. fetch module
-    const code = await getModule("FungibleToken")
-    const contractModule = dynamicRequire(code, config.transactionID, )
-
-    // 3. fetch getters and constructor
-    const getters = await fetchABI("FungibleToken")
-
-    console.log("### successfully compiled emscripten module")
-
-    console.log(`
-#################################################################
-#
-#   Processor: starting block handler
-#
-#################################################################
-    `)
-
-    // 3. start processor
-    gearia(contractModule, config.transactionID, getters, config.constructor, config.blockHeight)
-
+    exec(`pm2 start ${__dirname}/run.js --name processor`, (error, stdout, stderr) => {
+      if (error) console.log("### error running processor", error)
+      if (stderr) console.log("### error running processor", stderr)
+      console.log("stdout", stdout)
+    })
   })
 
 /*******************************************

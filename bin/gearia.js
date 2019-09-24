@@ -29,7 +29,7 @@ const gearia = (contractModule, contractID, getters, _constructor, startBlock) =
       },
       onstart: (e) => {
         console.log("on start")
-        contract = new contractModule.FungibleToken(..._constructor)
+        contract = new contractModule.FungibleToken(...JSON.parse(_constructor))
 
         txDB = level("txDB", { valueEncoding: "json" })
         L.server({ db: txDB, port: 28335 })
@@ -131,7 +131,7 @@ const getState = (method, returnType) => {
 const createServer = (name) => {
   const serverPort = (name === "TxDB") ? 3009 : 3010
   const clientPort = (name === "TxDB") ? 28335 : 28336
-  exec(`GEARIA_SERVER_PORT=${serverPort} GEARIA_NAME=${name} GEARIA_CLIENT_PORT=${clientPort} node ${__dirname}/server.js`, (error, stdout, stderr) => {
+  exec(`GEARIA_SERVER_PORT=${serverPort} GEARIA_NAME=${name} GEARIA_CLIENT_PORT=${clientPort} pm2 start ${__dirname}/server.js --name ${name}`, (error, stdout, stderr) => {
     if (error) console.log("### Error in ", name, error)
     else console.log("#### stdout:", stdout)
   })
