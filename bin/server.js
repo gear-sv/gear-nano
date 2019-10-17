@@ -6,7 +6,10 @@ console.log("ENV (name,server,client): ", process.env.GEARIA_NAME, process.env.G
 planarium.start({
   name: process.env.GEARIA_NAME,
   port: process.env.GEARIA_SERVER_PORT,
+<<<<<<< HEAD
 
+=======
+>>>>>>> b7a24b412bda763f5711f2fd6e0828f97e5281a1
   default: {}, // empty default
   onstart: () => {
     return L.client({ host: "127.0.0.1", port: process.env.GEARIA_CLIENT_PORT})
