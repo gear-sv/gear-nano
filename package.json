@@ -5,7 +5,7 @@
   "main": "index.js",
   "bin": "bin/cli.js",
   "scripts": {
-    "start": "gear-nano init $contractID && gear-nano processor & gear-nano state & gear-nano transactions",
+    "start": "gear-nano init $contractID && gear-nano processor && gear-nano state && gear-nano transactions",
     "clear": ". ./clear"
   },
   "repository": {

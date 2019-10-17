@@ -11,7 +11,7 @@ planarium.start({
   onstart: () => {
     return L.client({ host: "127.0.0.1", port: process.env.GEARIA_CLIENT_PORT})
   },
-  onquery: () => {
+  onquery: (e) => {
     let code = Buffer.from(e.query, 'base64').toString()
     let req = JSON.parse(code)
     if (req.get) {
