@@ -27,6 +27,7 @@ const gearia = (contractModule, contractID, getters, _constructor, startBlock) =
           }
         }
       },
+
       onstart: (e) => {
         console.log("event:",e)
         console.log("constructor:",_constructor)
@@ -41,33 +42,75 @@ const gearia = (contractModule, contractID, getters, _constructor, startBlock) =
         L.server({ db: stateDB, port: 28336 })
       },
       onblock: (e) => {
+
+        // run some DB tests
+        txDB.put('test','OK', function(err){
+          if (err) return console.log("oops,",err)
+          txDB.get('test', function(err){
+            if (err) return console.log("oops",err)
+          })
+        })
+
+        stateDB.put('test','OK', function(err){
+          if (err) return console.log("oops,",err)
+          stateDB.get('test', function(err){
+            if (err) return console.log("oops",err)
+          })
+        })
+
+        console.log("onBlock HIT");
+        console.log("e:",JSON.stringify(e))
+        console.log("e.height: ",e.height)
+        console.log("transaction.tx.h", e.tx.h)
+
+        // e.tx.forEach((unit, i) => {
+        //   console.log("unit:", unit)
+        // })
+
         // 1. update contract with method calls
-        const status = e.tx.map(transaction => updateState(transaction))
+        //const status = e.tx.map(transaction => updateState(transaction))
+
+
+
 
         // 2. save transactions
         e.tx.forEach((transaction, i) => {
+
+          console.log("loop hit")
+
           const tx = {
             SENDER: transaction.in[0].e.a,
             method: transaction.out[0].s3,
             params: JSON.parse(transaction.out[0].s4),
-            index: transaction.i,
-            status: status[i]
+            index: transaction.i
+            //status: status[i]
           }
 
+          console.log("key:",transaction.tx.h);
+          console.log("tx-object:", tx)
+
+
           txDB.put(transaction.tx.h, tx, (error) => {
-            if (error) console.log("# could not write transaction to db")
-            if (error) console.log("# could not write state update to db")
+            if (error) console.error("# could not write transaction to db: ",error)
+            if (error) console.error("# could not write state update to db: ",error)
+            if(transaction.tx.h == null) console.log("tx was null, please check mapping.")
             console.log("\n\n####################")
             console.log("#")
-            console.log(`# Transaction: ${transaction.tx.h}`)
+            console.log(`# Transaction: ${transaction.h}`)
             console.log("#")
             console.log("####################\n")
             console.log(tx)
-          })
+
         })
+      })
 
         // 3. save contract state
         const stateObj = Object.keys(getters).reduce((accumulator, getter) => {
+          console.log("global object? ",JSON.stringify(Object))
+
+          console.log("object-keys",JSON.stringify(Object.keys))
+          console.log("getter: ",JSON.stringify(getter))
+          
           const state = getState(getter, getters[getter])
           accumulator[getter] = state
           return accumulator
@@ -75,7 +118,7 @@ const gearia = (contractModule, contractID, getters, _constructor, startBlock) =
 
         // 3. save state snapshot by block number
         stateDB.put(e.height, stateObj, (error) => {
-          if (error) console.log("# could not write state update to db")
+          if (error) console.error("# could not write state update to db: ",error)
           console.log("\n\n####################")
           console.log("#")
           console.log(`# State Updated: ${e.height}`)
@@ -84,10 +127,12 @@ const gearia = (contractModule, contractID, getters, _constructor, startBlock) =
           console.log(stateObj)
           console.log("\n\n")
         })
-      }
-    })
+
+    }
+   })
   }
 }
+  
 
 const updateState = (transaction) => {
   // get transaction data
@@ -107,7 +152,7 @@ const getState = (method, returnType) => {
   console.log(returnType)
   // check that method exists
   if (!contract[method]) {
-    console.log("### WARNING: unsupported getter function", method)
+    console.error("### WARNING: unsupported getter function", method)
     return "unsupported method"
   }
 

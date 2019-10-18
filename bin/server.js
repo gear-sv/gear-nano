@@ -1,7 +1,7 @@
 const { planarium } = require('neonplanaria')
 const L = require('interlevel')
 console.log("ENV (name,server,client): ", process.env.GEARIA_NAME, process.env.GEARIA_SERVER_PORT, process.env.GEARIA_CLIENT_PORT)
-
+const level = require('level')
 
 planarium.start({
   name: process.env.GEARIA_NAME,
@@ -15,6 +15,7 @@ planarium.start({
     let code = Buffer.from(e.query, 'base64').toString()
     let req = JSON.parse(code)
     if (req.get) {
+      console.log(JSON.stringify(e.core))
       e.core.get(req.get, function(err, val) {
         if (err) e.res.json({ error: "key does not exist" })
         else e.res.json({ val: val })

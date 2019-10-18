@@ -5,8 +5,9 @@
   "main": "index.js",
   "bin": "bin/cli.js",
   "scripts": {
+    "prestart": "source ./bin/prestart.sh",
     "start": "gear-nano init $contractID && gear-nano processor && gear-nano state && gear-nano transactions",
-    "clear": ". ./clear"
+    "clear": "source ./bin/clear.sh"
   },
   "repository": {
     "type": "git",

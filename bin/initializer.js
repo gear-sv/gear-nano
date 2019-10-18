@@ -78,6 +78,9 @@ const createConfig = (config) => {
       resolve(true)
     })
   })
+  .catch((error) => {
+    reject(error)
+  })
 }
 
 module.exports = {
