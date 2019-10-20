@@ -17,6 +17,7 @@ let contract
 const gearia = (contractModule, contractID, getters, _constructor, startBlock) => {
   contractModule.onRuntimeInitialized = () => {
 
+
     contract = new contractModule.FungibleToken(...JSON.parse(_constructor))
 
     console.log("### Contract Initialized")
@@ -114,9 +115,16 @@ const updateState = (transaction) => {
   const SENDER = transaction.in[0].e.a
 
   // make sure method is available
-  if (!contract[methodName]) return "invalid"
+  if (!contract[methodName]) return "invalid method"
 
-  return contract[methodName](SENDER, ...params)
+  try {
+    const status = contract[methodName](SENDER, ...params)
+    return status  
+  }
+  catch(err) {
+    console.error(err)
+    return "invalid params"
+  }
 }
 
 const getState = (method, returnType) => {
