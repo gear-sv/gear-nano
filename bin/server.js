@@ -15,6 +15,7 @@ planarium.start({
     let code = Buffer.from(e.query, 'base64').toString()
     let req = JSON.parse(code)
     if (req.get) {
+      console.log(req.get)
       console.log(JSON.stringify(e.core))
       e.core.get(req.get, function(err, val) {
         if (err) e.res.json({ error: "key does not exist" })

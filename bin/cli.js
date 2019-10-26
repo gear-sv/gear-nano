@@ -8,6 +8,7 @@ const readFile = util.promisify(require("fs").readFile)
 const { initializeMachine } = require("./initializer.js")
 const { gearia, createServer } = require("./gearia.js")
 const { getModule, dynamicRequire, fetchABI } = require("./processor.js")
+const { getStats } = require("./stats.js")
 
 /*******************************************
 *
@@ -109,6 +110,25 @@ program
 #################################################################
     `)
     createServer("TxDB")
+  })
+
+/*******************************************
+*
+* $ gear-nano stats
+*
+*******************************************/
+
+program
+  .command("stats")
+  .action(async () => {
+    console.log(`
+#################################################################
+#
+#   Stats: fetching contract statistics
+#
+#################################################################
+    `)
+    await getStats()
   })
 
 program
