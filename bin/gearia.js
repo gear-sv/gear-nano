@@ -14,11 +14,11 @@ let stateDB
 
 let contract
 
-const gearia = (contractModule, contractID, getters, _constructor, startBlock) => {
+const gearia = (contractModule, contractID, getters, _constructor, startBlock, contractName) => {
   contractModule.onRuntimeInitialized = () => {
 
 
-    contract = new contractModule.FungibleToken(...JSON.parse(_constructor))
+    contract = new contractModule[contractName](...JSON.parse(_constructor))
 
     console.log("### Contract Initialized")
     planaria.start({
@@ -119,7 +119,7 @@ const updateState = (transaction) => {
 
   try {
     const status = contract[methodName](SENDER, ...params)
-    return status  
+    return status
   }
   catch(err) {
     console.error(err)

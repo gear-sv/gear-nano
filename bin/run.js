@@ -34,5 +34,5 @@ const run = (async () => {
   #################################################################
   `)
 
-  gearia(contractModule, config.transactionID, getters, config.constructor, config.blockHeight)
+  gearia(contractModule, config.transactionID, getters, config.constructor, config.blockHeight, config.contractName)
 })()
