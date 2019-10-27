@@ -3,6 +3,8 @@ const util = require("util")
 const { exec } = require("child_process")
 const fs = require("fs")
 const writeFile = util.promisify(require("fs").writeFile)
+const readDir = util.promisify(require("fs").readdir)
+const readFile = util.promisify(require("fs").readFile)
 const axios = require("axios")
 const txo = require("txo")
 const tar = require("tar")
@@ -14,7 +16,10 @@ const initializeMachine = async (transactionID) => {
 
   await fetchPackage(transactionID)
 
+  const contractName = await fetchContractName()
+
   await createConfig({
+    contractName, 
     transactionID,
     blockHash,
     blockHeight,
@@ -67,6 +72,12 @@ const fetchConstructor = async (transactionID) => {
   const { data: { hex }} = response
   const tx = await txo.fromTx(hex)
   return ([tx.out[0].s3])
+}
+
+const fetchContractName = async () => {
+  const files = await readDir(`${process.cwd()}/tmp`)
+  const name = files[0].split('.')[0]
+  return name
 }
 
 const createConfig = (config) => {
